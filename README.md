@@ -1,2 +1,2 @@
-# pdfgenerator
-PDF Generator using headless Chrome on AWS Lambda
+# PDFGenerator
+PDF Generator using headless Chrome on Amazon AWS Lambda.

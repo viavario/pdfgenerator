@@ -1,0 +1,24 @@
+{
+    "name": "viavario/pdfgenerator",
+    "description": "PDF Generator using headless Chrome on AWS Lambda",
+    "type": "library",
+    "license": "GPL-3.0-only",
+    "minimum-stability": "stable",
+    "require": {
+        "guzzlehttp/guzzle": "7.0"
+    },
+    "autoload": {
+        "psr-4": {"viavario\\pdfgenerator\\": "src/"}
+    },
+    "require-dev": {
+        "clean/phpdoc-md": "^0.19.1"
+    },
+    "scripts": {
+        "build-documentation": [
+            "phpdoc -d ./ -t ./docs --template=\"xml\"",
+            "php ./vendor/clean/phpdoc-md/bin/phpdoc-md",
+            "php -r \"@unlink('./docs/structure.xml');\"",
+            "php -r \"$path='.phpdoc';if(PHP_OS==='WINNT'){exec(sprintf('rd /s /q %s',escapeshellarg($path)));}else{exec(sprintf('rm -rf %s',escapeshellarg($path)));}\""
+        ]
+    }
+}

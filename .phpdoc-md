@@ -1,0 +1,9 @@
+<?php
+return (object)[
+    'rootNamespace' => 'viavario\pdfgenerator', 
+    'destDirectory' => 'docs',
+    'format' => 'github',
+    'classes' => [
+        '\viavario\pdfgenerator\PDFGenerator',
+    ],
+];
