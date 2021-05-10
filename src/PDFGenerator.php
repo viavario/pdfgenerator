@@ -9,7 +9,7 @@ use GuzzleHttp\Client;
  *
  * @author  Lien Dassen <lien.dassen@viavario.be>
  *
- * @version 1.0
+ * @version 1.0.1
  */
 class PDFGenerator
 {
@@ -182,7 +182,7 @@ class PDFGenerator
      * @param string $bottom  bottom margin
      * @param string $left    Left margin
      *
-     * @return PDFGenerator return this instance
+     * @return \viavario\pdfgenerator\PDFGenerator return this instance
      */
     public function setMargins(string $margins, string $right = null, string $bottom = null, string $left = null)
     {
@@ -208,7 +208,7 @@ class PDFGenerator
      *
      * @param string $html HTML Markup
      *
-     * @return PDFGenerator
+     * @return \viavario\pdfgenerator\PDFGenerator
      */
     public function setFooterTemplate(string $html)
     {
@@ -232,7 +232,7 @@ class PDFGenerator
      *
      * @param string $html HTML Markup
      *
-     * @return PDFGenerator
+     * @return \viavario\pdfgenerator\PDFGenerator
      */
     public function setHeaderTemplate(string $html)
     {
@@ -249,7 +249,7 @@ class PDFGenerator
      *
      * @param bool $displayHeaderFooter set to true to display the header and footer in the PDF document
      *
-     * @return PDFGenerator
+     * @return \viavario\pdfgenerator\PDFGenerator
      */
     public function displayHeaderFooter(bool $displayHeaderFooter)
     {
@@ -263,7 +263,7 @@ class PDFGenerator
      *
      * @param string $orientation PDFGenerator::ORIENTATION_LANDSCAPE or PDFGenerator::ORIENTATION_PORTRAIT
      *
-     * @return PDFGenerator
+     * @return \viavario\pdfgenerator\PDFGenerator
      */
     public function setOrientation(string $orientation)
     {
@@ -287,8 +287,10 @@ class PDFGenerator
      *  A4: 8.27in x 11.7in
      *  A5: 5.83in x 8.27in
      *  A6: 4.13in x 5.83in
+     * 
+     * @param string $format    The page format for the PDF.
      *
-     * @return PDFGenerator
+     * @return \viavario\pdfgenerator\PDFGenerator
      */
     public function setFormat(string $format)
     {
@@ -301,9 +303,9 @@ class PDFGenerator
      *  Give any CSS @page size declared in the page priority over what is declared in width and height or format
      * options. Defaults to false, which will scale the content to fit the paper size.
      *
-     * @param bool $preferCSSPageSize set to true to enqble CSS page size
+     * @param bool $preferCSSPageSize Set to true to enqble CSS page size
      *
-     * @return PDFGenerator
+     * @return \viavario\pdfgenerator\PDFGenerator
      */
     public function preferCSSPageSize(bool $preferCSSPageSize)
     {
@@ -315,9 +317,9 @@ class PDFGenerator
     /**
      * Hides default white background and allows capturing screenshots with transparency. Defaults to false.
      *
-     * @param bool $omitBackground set to true to omit white backgrounds
+     * @param bool $omitBackground Set to true to omit white backgrounds
      *
-     * @return PDFGenerator
+     * @return \viavario\pdfgenerator\PDFGenerator
      */
     public function omitBackground(bool $omitBackground)
     {
@@ -329,9 +331,9 @@ class PDFGenerator
     /**
      * Sets the content.
      *
-     * @param string $content the HTML content to take a screenshot of
+     * @param string $content The HTML content to take a screenshot of
      *
-     * @return PDFGenerator
+     * @return \viavario\pdfgenerator\PDFGenerator
      */
     public function setContent(string $content)
     {
@@ -343,9 +345,9 @@ class PDFGenerator
     /**
      * Set the URL.
      *
-     * @param string $url the URL of the page to take a screenshot of
+     * @param string $url The URL of the page to take a screenshot of
      *
-     * @return PDFGenerator
+     * @return \viavario\pdfgenerator\PDFGenerator
      */
     public function setURL(string $url)
     {
@@ -359,7 +361,7 @@ class PDFGenerator
      *
      * @param string $filename Set the filename for the output. Only extensions .pdf and .png are allowed.
      *
-     * @return PDFGenerator
+     * @return \viavario\pdfgenerator\PDFGenerator
      */
     public function setFilename(string $filename)
     {
@@ -369,11 +371,14 @@ class PDFGenerator
     }
 
     /**
-     * Sets the viewport height and viewport width.
+     * Set the width and height of the viewport.
      *
-     * @return PDFGenerator
+     * @param   int  $viewportWidth  The width of the viewport
+     * @param   int  $viewportHeight The height of the viewport
+     *
+     * @return \viavario\pdfgenerator\PDFGenerator
      */
-    public function setViewportSize(int $viewPortheight, int $viewPortWidth)
+    public function setViewportSize(int $viewportWidth, int $viewportHeight)
     {
         $this->viewPortheight = $viewPortheight;
         $this->viewPortWidth = $viewPortWidth;
@@ -382,9 +387,12 @@ class PDFGenerator
     }
 
     /**
-     * Sets the HTTPAuthentication username and password.
+     * Sets the username and password for basic HTTP authentication.
      *
-     * @return PDFGenerator
+     * @param string $username  The username for basic HTTP authentication
+     * @param string $password  The password for basic HTTP authentication
+     *
+     * @return \viavario\pdfgenerator\PDFGenerator
      */
     public function setHttpAuthentication(string $username, string $password)
     {
@@ -399,7 +407,7 @@ class PDFGenerator
      *
      * @param bool $printBackground Set to true to print backgrounds
      *
-     * @return PDFGenerator
+     * @return \viavario\pdfgenerator\PDFGenerator
      */
     public function printBackground(bool $printBackground)
     {
@@ -411,7 +419,8 @@ class PDFGenerator
     /**
      * Generate a screenshot.
      *
-     * @param string $filename The filename to write to (defaults to null which will cause the method to return binary data)
+     * @param string $filename  The filename to write to (defaults to null which will cause the method to return
+     *                          binary data)
      *
      * @return mixed If no filename is specified, then the generated file is returned as binary data.
      *               If a filename is specified, then true is returned when the file was written
