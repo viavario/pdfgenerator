@@ -55,7 +55,7 @@ npm install
 ```
 
 6. Open `screenshot-service/serverless.yml` and change the region on line 10 to the region you wish to deploy to on Amazon AWS as well as the corresponding reference to the required Lambda layer on line 27.
-See [https://github.com/shelfio/chrome-aws-lambda-layer](https://github.com/shelfio/chrome-aws-lambda-layer) and (https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints){https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints} for more information about the available regions and corresponding references for the Lambda layer.  
+See [https://github.com/shelfio/chrome-aws-lambda-layer](https://github.com/shelfio/chrome-aws-lambda-layer) and [https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints]{https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints} for more information about the available regions and corresponding references for the Lambda layer.  
 ```
   region: eu-west-3
   ...
