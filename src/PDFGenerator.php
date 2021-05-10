@@ -130,14 +130,14 @@ class PDFGenerator
      *
      * @var int
      */
-    protected $viewPortheight = 1200;
+    protected $viewportHeight = 1200;
 
     /**
      * The viewport width of the file.
      *
      * @var int
      */
-    protected $viewPortWidth = 768;
+    protected $viewportWidth = 768;
 
     /**
      * The username for HTTP authentication.
@@ -380,8 +380,8 @@ class PDFGenerator
      */
     public function setViewportSize(int $viewportWidth, int $viewportHeight)
     {
-        $this->viewPortheight = $viewPortheight;
-        $this->viewPortWidth = $viewPortWidth;
+        $this->viewportWidth = $viewportWidth;
+        $this->viewportHeight = $viewportHeight;
 
         return $this;
     }
@@ -447,8 +447,8 @@ class PDFGenerator
             'content' => $this->content,
             'url' => $this->url,
             'filename' => $this->filename,
-            'width' => $this->viewPortWidth,
-            'height' => $this->viewPortheight,
+            'width' => $this->viewportWidth,
+            'height' => $this->viewportHeight,
             'username' => $this->username,
             'password' => $this->password,
         ];
