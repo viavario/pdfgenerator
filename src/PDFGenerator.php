@@ -44,7 +44,7 @@ class PDFGenerator
      *
      * @var string
      */
-    protected $apiKey;
+    protected $apiKey = null;
 
     /**
      * Endpoint URL.
@@ -164,14 +164,14 @@ class PDFGenerator
      * Class constructor.
      *
      * @param string $endpoint The endpoint URL
-     * @param string $apiKey   The API key for the AWS Lambda function
+     * @param string $apiKey   The API key for the AWS Lambda function (defaults to null)
      *
      * @return void
      */
-    public function __construct(string $endpoint, string $apiKey)
+    public function __construct(string $endpoint, string $apiKey = null)
     {
-        $this->apiKey = $apiKey;
         $this->endpoint = $endpoint;
+        $this->apiKey = $apiKey;
     }
 
     /**
@@ -444,11 +444,14 @@ class PDFGenerator
             'password' => $this->password,
         ];
 
+        $headers = [];
+        if ($this->apiKey) {
+            $headers['x-api-key'] = $this->apiKey;
+        }
+
         $response = $client->request('POST', 'capture', [
             'body' => json_encode($body),
-            'headers' => [
-                'x-api-key' => $this->apiKey,
-            ],
+            'headers' => $headers,
         ]);
 
         if ($response->getStatusCode() === 200) {
