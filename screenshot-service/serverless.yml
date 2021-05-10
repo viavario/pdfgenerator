@@ -1,0 +1,27 @@
+service: screenshot-service
+frameworkVersion: '2'
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  apiGateway:
+    binaryMediaTypes:
+      - "*/*"
+  region: eu-west-3
+
+functions:
+  capture:
+    handler: handler.capture # refers to function capture in handler.js
+    events:
+      - http:
+          path: capture
+          method: get
+          private: true
+      - http:
+          path: capture
+          method: post
+          private: true
+    memorySize: 1536 # RAM size for the function
+    timeout: 15
+    layers: # reference to the already existing layer with Chrome
+      - arn:aws:lambda:eu-west-3:764866452798:layer:chrome-aws-lambda:20

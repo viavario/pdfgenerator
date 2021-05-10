@@ -1,0 +1,16 @@
+{
+    "name": "screenshot-service",
+    "version": "1.0.0",
+    "description": "",
+    "main": "handler.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "fs": "0.0.1-security",
+        "lodash.merge": "^4.6.2",
+        "puppeteer-core": "^9.0.0"
+    }
+}
