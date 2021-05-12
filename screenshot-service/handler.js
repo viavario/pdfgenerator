@@ -116,7 +116,7 @@ const capture = async (event) => {
     let extension = options.filename.substr(options.filename.length - 3);
     if (extension === 'pdf') {
         // Output as PDF
-        await page.emulateMediaType('screen');
+        await page.emulateMediaType(null);
         const pdf = await page.pdf(options.pdfOptions);
 
         return {
