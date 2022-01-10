@@ -72,6 +72,17 @@ serverless deploy --stage production
 ![Output of serverless deploy](./docs/img/serverless-output.jpg)
 
 If you haven't configured any API keys yet in the API Gateway for the screenshot service, you can simply copy the endpoint URL of the GET request, append `?filename=screenshot.png&url=[URL of your website]` to the endpoint URL and open it in your browser.  
+
+**Note that you have to set *API Key Required* to *false* for the */capture - GET -Method Request* in the API to test this without API Keys:**
+    # Go to *Amazon API Gateway*
+    # Open the API for the screenshot service
+    # Click on *GET* under */capture* in the *Resources* panel
+    # Click on *Method Request*
+    # Click on the pencil icon next to **API Key Required**, change the setting from *true* to *false*, and click the check mark icon to save the setting.
+    # Click on the *Actions* button, and choose *Deploy API* from the menu to redeploy the API to test the GET-request without API Keys.
+    
+Make sure to set **API Key Required** to *true* after you have verified that the screenshot service works in order to prevent unauthorized use or access.
+
 For example: `https://##########.execute-api.eu-west-3.amazonaws.com/dev/capture?filename=screenshot.png&url=https://www.google.com/finance/quote/TSLA:NASDAQ?hl=en` returns a screenshot of the Tesla stock on Google Finance:
 
 ![Example screenshot](./docs/img/example-screenshot.jpg)
