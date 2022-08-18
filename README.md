@@ -60,7 +60,7 @@ See [https://github.com/shelfio/chrome-aws-lambda-layer](https://github.com/shel
   region: eu-west-3
   ...
     layers: # reference to the already existing layer with Chrome
-      - arn:aws:lambda:eu-west-3:764866452798:layer:chrome-aws-lambda:20
+      - arn:aws:lambda:eu-west-3:764866452798:layer:chrome-aws-lambda:31
 ```
 
 7. Next, deploy the screenshot service to Amazon AWS:  

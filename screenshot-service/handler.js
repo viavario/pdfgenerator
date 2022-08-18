@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer-core");
-const chrome = require("chrome-aws-lambda");
+const chrome = require("@sparticuz/chrome-aws-lambda");
 const merge = require("lodash.merge");
 
 /**
