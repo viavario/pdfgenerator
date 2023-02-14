@@ -119,6 +119,9 @@ const capture = async (event) => {
         await page.emulateMediaType(null);
         const pdf = await page.pdf(options.pdfOptions);
 
+        await page.close();
+        await browser.close();
+
         return {
             isBase64Encoded: true,
             headers: {
@@ -135,6 +138,9 @@ const capture = async (event) => {
             encoding: "base64",
             fullPage: true
         });
+
+        await page.close();
+        await browser.close();
 
         return {
             body: screenshot,
