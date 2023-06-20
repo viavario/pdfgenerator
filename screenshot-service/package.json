@@ -11,6 +11,6 @@
     "dependencies": {
         "fs": "0.0.1-security",
         "lodash.merge": "^4.6.2",
-        "puppeteer-core": "^16.1.1"
+        "puppeteer-core": "^16.2.0"
     }
 }
