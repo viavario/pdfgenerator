@@ -1,8 +1,7 @@
 service: screenshot-service
-frameworkVersion: '2'
 provider:
   name: aws
-  runtime: nodejs16.x
+  runtime: nodejs18.x
   lambdaHashingVersion: 20201221
   apiGateway:
     binaryMediaTypes:
@@ -24,4 +23,4 @@ functions:
     memorySize: 1536 # RAM size for the function
     timeout: 15
     layers: # reference to the already existing layer with Chrome
-      - arn:aws:lambda:eu-west-3:764866452798:layer:chrome-aws-lambda:31
+      - arn:aws:lambda:eu-west-3:764866452798:layer:chrome-aws-lambda:45

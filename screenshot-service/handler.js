@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer-core");
-const chrome = require("@sparticuz/chrome-aws-lambda");
+const chrome = require('@sparticuz/chromium');
 const merge = require("lodash.merge");
 
 /**
@@ -59,7 +59,7 @@ const capture = async (event) => {
 
     // Launch the browser
     const browser = await puppeteer.launch({
-        executablePath: await chrome.executablePath,
+        executablePath: await chrome.executablePath(),
         args: chrome.args,
         headless: chrome.headless,
         ignoreHTTPSErrors: true,
@@ -124,6 +124,7 @@ const capture = async (event) => {
 
         return {
             isBase64Encoded: true,
+            statusCode: 200,
             headers: {
                 "Content-type": "application/pdf",
                 "Accept-Ranges": "bytes",
@@ -143,6 +144,7 @@ const capture = async (event) => {
         await browser.close();
 
         return {
+            statusCode: 200,
             body: screenshot,
             headers: {
                 "Content-Type": "image/png",
@@ -152,7 +154,15 @@ const capture = async (event) => {
         }
     }
 
-    return { statusCode: 403, body: 'Invalid filename. Only files with extensions .pdf and .png are allowed.' };
+    return {
+        statusCode: 403,
+        headers: {
+            "Content-Type": "text/plain",
+            'Access-Control-Allow-Origin': '*'
+        },
+        body: 'Invalid filename. Only files with extensions .pdf and .png are allowed.',
+        isBase64Encoded: false
+    };
 }
 
 module.exports = { capture };
