@@ -1,12 +1,47 @@
 service: screenshot-service
+
+plugins:
+  - serverless-plugin-scripts
+
 provider:
   name: aws
-  runtime: nodejs18.x
+  runtime: nodejs22.x
+  architecture: x86_64
   lambdaHashingVersion: 20201221
   apiGateway:
     binaryMediaTypes:
       - "*/*"
   region: eu-west-3
+
+custom:
+  # Pick the Sparticuz release you want (example values)
+  chromium:
+    version: v141.0.0
+    arch: x64                  # use 'arm64' if your function runs on arm64
+    zip: chromium-${self:custom.chromium.version}-layer.${self:custom.chromium.arch}.zip
+    url: https://github.com/Sparticuz/chromium/releases/download/${self:custom.chromium.version}/${self:custom.chromium.zip}
+
+  # Download the ZIP into .serverless/ before Serverless packages the stack
+  scripts:
+    hooks:
+      before:package:createDeploymentArtifacts: node ./scripts/fetch-chromium.js
+      # Optional: delete the file after deploy to keep your repo clean
+      # after:deploy:finalize: node ./scripts/clean-chromium.js
+
+layers:
+  chromium:
+    name: ${self:service}-${sls:stage}-chromium
+    package:
+      # Use the pre-downloaded artifact; Serverless uploads & publishes it as a Layer
+      artifact: .serverless/${self:custom.chromium.zip}
+    compatibleRuntimes:
+      - nodejs22.x
+      - nodejs20.x
+    compatibleArchitectures:
+      - x86_64
+    # Optional: share the layer with other accounts (or make public with '*', not recommended)
+    # allowedAccounts:
+    #   - '123456789012'
 
 functions:
   capture:
@@ -22,5 +57,6 @@ functions:
           private: true
     memorySize: 1536 # RAM size for the function
     timeout: 15
-    layers: # reference to the already existing layer with Chrome
-      - arn:aws:lambda:eu-west-3:764866452798:layer:chrome-aws-lambda:45
+    layers:
+      # Reference the layer created in this stack (no ARNs to copy/paste)
+      - { Ref: ChromiumLambdaLayer }

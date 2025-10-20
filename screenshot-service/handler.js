@@ -48,121 +48,165 @@ function getBody(event) {
 }
 
 const capture = async (event) => {
-    let options = getBody(event);
-    if (options === false) {
-        return { statusCode: 403, body: 'Invalid JSON body' };
-    }
+    let browser;
 
-    if (!options.content && !options.url) {
-        return { statusCode: 403, body: 'Missing url or content' };
-    }
+    try {
+        let options = getBody(event);
+        if (options === false) {
+            return { statusCode: 403, body: 'Invalid JSON body' };
+        }
 
-    // Launch the browser
-    const browser = await puppeteer.launch({
-        executablePath: await chrome.executablePath(),
-        args: chrome.args,
-        headless: chrome.headless,
-        ignoreHTTPSErrors: true,
-        defaultViewport: chrome.defaultViewport
-    });
+        if (!options.content && !options.url) {
+            return { statusCode: 403, body: 'Missing url or content' };
+        }
 
-    // Open a new tab and set the size of the viewport
-    const page = await browser.newPage();
-    await page.setViewport({
-        width: Number(options.width),
-        height: Number(options.height)
-    });
+        // Launch the browser
+        browser = await puppeteer.launch({
+            executablePath: await chrome.executablePath(),
+            args: chrome.args,
+            headless: chrome.headless,
+            ignoreHTTPSErrors: true,
+            defaultViewport: chrome.defaultViewport
+        });
 
-    // Wait until everything is loaded properly
-    const loaded = page.waitForNavigation({
-        waitUntil: ['load', 'domcontentloaded', 'networkidle0']
-    });
+        // Open a new tab and set the size of the viewport
+        const page = await browser.newPage();
 
-    // Set the X-AWS-ScreenShot header
-    await page.setExtraHTTPHeaders({
-        "X-AWS-ScreenShot": "1"
-    });
+        await page.setViewport({
+            width: Number(options.width),
+            height: Number(options.height)
+        });
 
-    // Set the username and password for HTTP Authentication
-    if (options.username && options.password) {
+        // Wait until everything is loaded properly
+        const loaded = page.waitForNavigation({
+            waitUntil: ['load', 'domcontentloaded', 'networkidle0']
+        });
+
+        // Set the X-AWS-ScreenShot header
         await page.setExtraHTTPHeaders({
-            'Authorization': 'Basic ' + (Buffer.from(options.username + ':' + options.password)).toString('base64')
-        });
-    }
-
-    // Set the content or navigate to the url
-    if (options.content) {
-        await page.setContent(options.content);
-    } else {
-        await page.goto(options.url);
-    }
-    await loaded;
-
-    // Set the dimensions of the page in order to get a full page screenshot
-    const dimensions = await page.evaluate(() => {
-        return {
-            width: document.documentElement.scrollWidth,
-            height: document.documentElement.scrollHeight,
-            deviceScaleFactor: window.devicePixelRatio
-        };
-    });
-    
-    await page.setViewport({
-        width: Number(dimensions.width),
-        height: Number(dimensions.height)
-    });
-
-    // Output the screenshot in the desired format
-    let extension = options.filename.substr(options.filename.length - 3);
-    if (extension === 'pdf') {
-        // Output as PDF
-        await page.emulateMediaType(null);
-        const pdf = await page.pdf(options.pdfOptions);
-
-        await page.close();
-        await browser.close();
-
-        return {
-            isBase64Encoded: true,
-            statusCode: 200,
-            headers: {
-                "Content-type": "application/pdf",
-                "Accept-Ranges": "bytes",
-                'Access-Control-Allow-Origin': '*',
-                "Content-Disposition": `attachment; filename="${options.filename}"`
-            },
-            body: pdf.toString('base64')
-        };
-    } else if (extension === 'png') {
-        // Output as PNG
-        const screenshot = await page.screenshot({
-            encoding: "base64",
-            fullPage: true
+            "X-AWS-ScreenShot": "1"
         });
 
-        await page.close();
-        await browser.close();
+        // Set the username and password for HTTP Authentication
+        if (options.username && options.password) {
+            await page.setExtraHTTPHeaders({
+                'Authorization': 'Basic ' + (Buffer.from(options.username + ':' + options.password)).toString('base64')
+            });
+        }
+
+        // Set the content or navigate to the url
+        if (options.content) {
+            await page.setContent(options.content);
+        } else {
+            await page.goto(options.url);
+        }
+        await loaded;
+
+        // Set the dimensions of the page in order to get a full page screenshot
+        const dimensions = await page.evaluate(() => {
+            return {
+                width: document.documentElement.scrollWidth,
+                height: document.documentElement.scrollHeight,
+                deviceScaleFactor: window.devicePixelRatio
+            };
+        });
+        
+        await page.setViewport({
+            width: Number(dimensions.width),
+            height: Number(dimensions.height)
+        });
+
+        // Output the screenshot in the desired format
+        let extension = options.filename.substr(options.filename.length - 3);
+        if (extension === 'pdf') {
+            // Output as PDF
+            await page.emulateMediaType(null);
+
+            try {
+                const pdf = await page.pdf(options.pdfOptions);
+
+                await page.close();
+                await browser.close();
+                
+                const base64String = Buffer.from(pdf).toString('base64');
+                const response = {
+                    statusCode: 200,
+                    headers: {
+                        "Content-Type": "application/pdf",
+                        'Access-Control-Allow-Origin': '*',
+                        "Content-Disposition": `attachment; filename="${options.filename}"`
+                    },
+                    body: String(base64String),
+                    isBase64Encoded: true
+                };
+
+                return response;
+            } catch (pdfError) {
+                console.error('PDF generation error:', pdfError);
+                console.error('PDF error stack:', pdfError.stack);
+                
+                await page.close();
+                await browser.close();
+                
+                throw pdfError;
+            }
+        } else if (extension === 'png') {
+            // Output as PNG
+            const screenshot = await page.screenshot({
+                encoding: "base64",
+                fullPage: true
+            });
+
+            await page.close();
+            await browser.close();
+
+            return {
+                statusCode: 200,
+                body: screenshot,
+                headers: {
+                    "Content-Type": "image/png",
+                    'Access-Control-Allow-Origin': '*'
+                },
+                isBase64Encoded: true
+            }
+        }
 
         return {
-            statusCode: 200,
-            body: screenshot,
+            statusCode: 403,
             headers: {
-                "Content-Type": "image/png",
+                "Content-Type": "text/plain",
                 'Access-Control-Allow-Origin': '*'
             },
-            isBase64Encoded: true
+            body: 'Invalid filename. Only files with extensions .pdf and .png are allowed.',
+            isBase64Encoded: false
+        };
+    } catch (error) {
+        console.error('Error in capture function:', error);
+        console.error('Error stack:', error.stack);
+        
+        // Clean up browser if it was opened
+        if (browser) {
+            try {
+                await browser.close();
+            } catch (closeError) {
+                console.error('Error closing browser:', closeError);
+            }
         }
+        
+        return {
+            statusCode: 500,
+            headers: {
+                "Content-Type": "application/json",
+                'Access-Control-Allow-Origin': '*'
+            },
+            body: JSON.stringify({
+                error: error.message,
+                stack: error.stack,
+                type: error.constructor.name
+            }),
+            isBase64Encoded: false
+        };
     }
-
-    return {
-        statusCode: 403,
-        headers: {
-            "Content-Type": "text/plain",
-            'Access-Control-Allow-Origin': '*'
-        },
-        body: 'Invalid filename. Only files with extensions .pdf and .png are allowed.',
-        isBase64Encoded: false
-    };
 }
 
 module.exports = { capture };

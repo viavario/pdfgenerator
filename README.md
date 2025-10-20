@@ -44,23 +44,16 @@ To limit the Serverless Framework’s access your AWS account, follow these step
 1. Login to your AWS Account and go to the Identity & Access Management (IAM) page.
 2. Click on Users and then **Add user**. Enter a name in the first field to remind you this User is related to the Service you are deploying with the Serverless Framework, like `serverless-servicename-agent1`. Enable **Programmatic access** by clicking the checkbox. Click **Next** to go through to the Permissions page. Click on **Create policy**. Select the **JSON** tab, and add a JSON file. You can use [this gist](https://gist.github.com/ServerlessBot/7618156b8671840a539f405dea2704c8) as a guide.
 3. When you are finished, select **Review policy**. You can assign this policy a **Name** and **Description**, then choose **Create Policy**. Check to make sure everything looks good and click **Create user**. Later, you can create different IAM Users for different apps and different stages of those apps. That is, if you don't use separate AWS accounts for stages/apps, which is most common.
-4. View and copy the **API Key** & **Secret** and replace `<your-key-here>` and `<your-secret-key-here>` in the command below and run the command:  
-```
-serverless config credentials --provider aws --key <your-key-here> --secret <your-secret-key-here>
-```
-
+4. Configure your AWS credentials by running `serverless` and selecting `Skip Adding An App`.
 5. Navigate to the directory `screenshot-service` in this repository in your terminal window and install the required packages by running:
 ```
 npm install
 ```
 
-6. Open `screenshot-service/serverless.yml` and change the region on line 10 to the region you wish to deploy to on Amazon AWS as well as the corresponding reference to the required Lambda layer on line 27.
-See [https://github.com/shelfio/chrome-aws-lambda-layer](https://github.com/shelfio/chrome-aws-lambda-layer) and [https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints]{https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints} for more information about the available regions and corresponding references for the Lambda layer.  
+6. Open `screenshot-service/serverless.yml` and change the region on line 10 to the region you wish to deploy to on Amazon AWS.
+See [https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints](https://docs.aws.amazon.com/general/latest/gr/rande.html#regional-endpoints) for more information about the available regions.  
 ```
   region: eu-west-3
-  ...
-    layers: # reference to the already existing layer with Chrome
-      - arn:aws:lambda:eu-west-3:764866452798:layer:chrome-aws-lambda:31
 ```
 
 7. Next, deploy the screenshot service to Amazon AWS:  
