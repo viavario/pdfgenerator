@@ -23,7 +23,7 @@ To deploy Chrome on Amazon Lambda you will need:
 To use this library in PHP:
 
 1. [Composer](https://getcomposer.org/)
-2. PHP 7+
+2. PHP 7.4 to 8.4
 
 <hr/>
 
