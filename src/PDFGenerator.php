@@ -9,7 +9,7 @@ use GuzzleHttp\Client;
  *
  * @author  Lien Dassen <lien.dassen@viavario.be>
  *
- * @version 1.0.1
+ * @version 1.1.0
  */
 class PDFGenerator
 {
@@ -168,7 +168,7 @@ class PDFGenerator
      *
      * @return void
      */
-    public function __construct(string $endpoint, string $apiKey = null)
+    public function __construct(string $endpoint, ?string $apiKey = null)
     {
         $this->endpoint = $endpoint;
         $this->apiKey = $apiKey;
@@ -184,7 +184,7 @@ class PDFGenerator
      *
      * @return \viavario\pdfgenerator\PDFGenerator return this instance
      */
-    public function setMargins(string $margins, string $right = null, string $bottom = null, string $left = null)
+    public function setMargins(string $margins, ?string $right = null, ?string $bottom = null, ?string $left = null)
     {
         $this->margins = [
             'top' => $margins,
@@ -426,7 +426,7 @@ class PDFGenerator
      *               If a filename is specified, then true is returned when the file was written
      *               successfully, or false otherwise.
      */
-    public function generate(string $filename = null)
+    public function generate(?string $filename = null)
     {
         $client = new Client([
             'base_uri' => $this->endpoint,
